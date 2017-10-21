@@ -27,6 +27,8 @@ namespace Tetris
         public static bool isLevelChanged;
         public static bool isLinesChanged;
 
+        int multiplier = 100;
+
         public Tetris()
         {
             isFigureChanged = true;
@@ -109,11 +111,12 @@ namespace Tetris
                 SpawnFigure();
 
                 // Прибавление счета
-                Stats.Score += 15;
+                Stats.Score += 10;
 
                 // Повышение уровня сложности каждые 100 очков
-                if (Stats.Score % 100 == 0)
+                if (Stats.Score >= multiplier)
                 {
+                    multiplier += 100;
                     Stats.Level++;
                     isLevelChanged = true;
                 }
@@ -247,6 +250,7 @@ namespace Tetris
                     }
 
                     Stats.Lines++;
+                    Stats.Score += 50;
                     isLinesChanged = true;
                 }
             }
