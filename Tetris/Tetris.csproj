@@ -42,8 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Colored.cs" />
+    <Compile Include="Direction.cs" />
+    <Compile Include="Figure.cs" />
+    <Compile Include="Line.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stats.cs" />
+    <Compile Include="Tetris.cs" />
+    <Compile Include="TextItem.cs" />
+    <Compile Include="Walls.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
