@@ -30,7 +30,7 @@ namespace Tetris
         }
 
         // Мигание текста
-        public void Flickering(int n, int speed)
+        public void Flashing(int n, int speed)
         {
             for (int i = 0; i < n; i++)
             {

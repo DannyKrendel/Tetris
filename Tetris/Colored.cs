@@ -9,8 +9,8 @@ namespace Tetris
     // Класс, который наследуют все цветные объекты
     class Colored
     {
-        protected ConsoleColor bgColor = ConsoleColor.Black;
-        protected ConsoleColor fgColor = ConsoleColor.White;
+        protected ConsoleColor bgColor = Console.BackgroundColor;
+        protected ConsoleColor fgColor = Console.ForegroundColor;
 
         // Метод, устанавливающий цвета объекта
         public void SetColor(ConsoleColor bgColor, ConsoleColor fgColor)

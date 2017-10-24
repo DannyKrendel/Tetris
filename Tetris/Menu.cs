@@ -64,7 +64,7 @@ namespace Tetris
                             SelectedItem--;
                             break;
                         case ConsoleKey.Enter:
-                            items[SelectedItem].Flickering(6, 5);
+                            items[SelectedItem].Flashing(6, 5);
                             return SelectedItem;
                     }
                     items[SelectedItem].ReverseColors();

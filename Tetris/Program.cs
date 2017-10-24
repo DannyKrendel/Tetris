@@ -113,6 +113,10 @@ namespace Tetris
                 if (tetris.Update(deltaTimeMS))
                     GameOver();
 
+                stopwatch.Stop();
+                tetris.RemoveLine();
+                stopwatch.Start();
+
                 // Выбор направления движения
                 tetris.HandleKey();
             }

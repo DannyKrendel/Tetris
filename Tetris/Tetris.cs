@@ -27,8 +27,6 @@ namespace Tetris
         public static bool isLevelChanged;
         public static bool isLinesChanged;
 
-        int multiplier = 100;
-
         public Tetris()
         {
             isFigureChanged = true;
@@ -39,33 +37,45 @@ namespace Tetris
 
             figureList = new List<Figure>()
             {
-                new Figure(1, ConsoleColor.Cyan, "■",
-                                                 "■",
-                                                 "■",
-                                                 "■"),
-                new Figure(-1, ConsoleColor.Yellow, "■■",
-                                                    "■■"),
-                new Figure(1, ConsoleColor.Gray, "■",
-                                                 "■",
-                                                 "■■"),
-                new Figure(1, ConsoleColor.Magenta, " ■",
-                                                    " ■",
-                                                    "■■"),
-                new Figure(2, ConsoleColor.Blue, " ■ ",
-                                                 "■■■"),
-                new Figure(0, ConsoleColor.Green, " ■■",
-                                                  "■■"),
-                new Figure(1, ConsoleColor.Red, "■■",
-                                                " ■■")
+                new Figure(1, "■",
+                              "■",
+                              "■",
+                              "■"),
+                new Figure(-1, "■■",
+                               "■■"),
+                new Figure(1, "■",
+                              "■",
+                              "■■"),
+                new Figure(1, " ■",
+                              " ■",
+                              "■■"),
+                new Figure(2, " ■ ",
+                              "■■■"),
+                new Figure(0, " ■■",
+                              "■■"),
+                new Figure(1, "■■",
+                              " ■■")
             };
 
+            figureList[0].SetColor(ConsoleColor.Black, ConsoleColor.Cyan);
+            figureList[1].SetColor(ConsoleColor.Black, ConsoleColor.Yellow);
+            figureList[2].SetColor(ConsoleColor.Black, ConsoleColor.Gray);
+            figureList[3].SetColor(ConsoleColor.Black, ConsoleColor.Magenta);
+            figureList[4].SetColor(ConsoleColor.Black, ConsoleColor.Blue);
+            figureList[5].SetColor(ConsoleColor.Black, ConsoleColor.Green);
+            figureList[6].SetColor(ConsoleColor.Black, ConsoleColor.Red);
+
             oldPoints = new List<Point>();
+
             GetNextFigure();
             SpawnFigure();
         }
 
         // Начальная скорость фигур
         int speed = 200;
+
+        // Множитель скорости
+        int multiplier = 100;
 
         // Время прошедшее с прошлого движения
         int timeSinceLastMove = 0;
@@ -102,9 +112,6 @@ namespace Tetris
                     oldPoints.Add(p);
                 }
 
-                // Проверка и удаление линии
-                RemoveLine();
-                
                 // Получение следующей фигуры
                 GetNextFigure();
                 // Спавн фигуры
@@ -223,26 +230,36 @@ namespace Tetris
             }
         }
 
-        // Проверка выстроенной линии
+        // Стирание выстроенной линии
         public void RemoveLine()
         {
-            for (int i = 1; i < Walls.Height - 1; i++)
+            // Если нет точек - функция не выполняется
+            if (oldPoints.Count == 0)
+                return;
+
+            for (int i = oldPoints.Min(p => p.Y); i < Walls.Height - 1; i++)
             {
-                int count = 0;
-                foreach (Point p in oldPoints)
-                {
-                    if (p.Y == i)
-                        count++;
-                }
+                int count = oldPoints.Count(p => p.Y == i);
+
                 if (count == Walls.Width - 2)
                 {
+                    var above = oldPoints.Where(p => p.Y < i).ToList();
+                    var middle = oldPoints.Where(p => p.Y == i).ToList();
+                    var below = oldPoints.Where(p => p.Y > i).ToList();
+
+                    Flashing(middle, 4, 6);
+
                     foreach (Point p in oldPoints)
                     {
                         p.Undraw();
                     }
 
-                    oldPoints = oldPoints.Where(p => p.Y < i).Select(p => new Point(p.X, p.Y + 1, p.Ch, p.fg))
-                        .Concat(oldPoints.Where(p => p.Y > i)).ToList();
+                    foreach (Point pnt in above)
+                    {
+                        pnt.Move(0, 1);
+                    }
+
+                    oldPoints = below.Concat(above).ToList();
 
                     foreach (Point p in oldPoints)
                     {
@@ -253,6 +270,29 @@ namespace Tetris
                     Stats.Score += 50;
                     isLinesChanged = true;
                 }
+            }
+        }
+
+        // Мигание списка точек
+        public void Flashing(List<Point> pList, int n, int speed)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                foreach (Point p in pList)
+                {
+                    p.Undraw();
+                }
+                Thread.Sleep(1000 / speed);
+
+                foreach (Point p in pList)
+                {
+                    p.Draw();
+                }
+                Thread.Sleep(1000 / speed);
+            }
+            foreach (Point p in pList)
+            {
+                p.Undraw();
             }
         }
     }

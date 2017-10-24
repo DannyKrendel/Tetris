@@ -6,40 +6,47 @@ using System.Threading;
 
 namespace Tetris
 {
-    class Figure
+    class Figure : Colored
     {
         // Список точек фигуры
         public List<Point> pList;
-        int center;
 
-        // Цвет фигуры
-        public ConsoleColor fg;
+        //Индекс точки центра фигуры
+        int center;
 
         public Figure()
         {
 
         }
 
+        // Создание фигуры из списка точек
+        public Figure(List<Point> pList)
+        {
+            this.pList = new List<Point>(pList);
+        }
+
         // Копирование фигуры
         public Figure(Figure figure)
         {
-            fg = figure.fg;
             center = figure.center;
+
+            SetColor(figure.bgColor, figure.fgColor);
 
             pList = new List<Point>();
 
             foreach (Point p in figure.pList)
             {
-                pList.Add(new Point(p.X, p.Y, p.Ch, fg));
+                pList.Add(new Point(p));
             }
         }
 
         // Создание фигуры из строки, с центром поворота
-        public Figure(int center, ConsoleColor fg = ConsoleColor.Gray, params string[] strArr)
+        public Figure(int center, params string[] strArr)
         {
             this.center = center;
-            this.fg = fg;
+
             pList = new List<Point>();
+
             for (int i = 0; i < strArr.Length; i++)
             {
                 for (int j = 0; j < strArr[i].Length; j++)
@@ -47,7 +54,7 @@ namespace Tetris
                     if (strArr[i][j] != ' ')
                     {
                         char ch = strArr[i][j];
-                        pList.Add(new Point(j, i, ch, fg));
+                        pList.Add(new Point(j, i, ch));
                     }
                 }
             }
@@ -58,6 +65,7 @@ namespace Tetris
         {
             foreach (Point p in pList)
             {
+                p.SetColor(bgColor, fgColor);
                 if (p.X > 0 && p.Y > 0)
                     p.Draw();
             }
@@ -68,6 +76,7 @@ namespace Tetris
         {
             foreach (Point p in pList)
             {
+                p.SetColor(bgColor, fgColor);
                 if (p.X > 0 && p.Y > 0)
                     p.Undraw();
             }
@@ -82,7 +91,8 @@ namespace Tetris
             {
                 int x = 0 - (pList[i].Y - pList[center].Y) + pList[center].X;
                 int y = pList[i].X - pList[center].X + pList[center].Y;
-                pList[i] = new Point(x, y, pList[i].Ch, fg);
+                pList[i] = new Point(x, y, pList[i].Ch);
+                pList[i].SetColor(bgColor, fgColor);
             }
         }
 

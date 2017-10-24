@@ -6,12 +6,12 @@ using System.Threading;
 
 namespace Tetris
 {
-    class Point
+    class Point : Colored
     {
         // Координаты точки
         int x;
         int y;
-        
+
         public int X
         {
             get => x;
@@ -26,20 +26,16 @@ namespace Tetris
         // Символ точки
         public char Ch { get; set; }
 
-        // Цвет точки
-        public ConsoleColor fg;
-
         public Point()
         {
 
         }
 
-        public Point(int x, int y, char ch, ConsoleColor fg = ConsoleColor.Gray)
+        public Point(int x, int y, char ch)
         {
             X = x;
             Y = y;
             Ch = ch;
-            this.fg = fg;
         }
 
         // Клонирование точки
@@ -48,22 +44,32 @@ namespace Tetris
             X = p.X;
             Y = p.Y;
             Ch = p.Ch;
+            bgColor = p.bgColor;
+            fgColor = p.fgColor;
         }
 
         // Рисование точки
         public void Draw()
         {
-            Console.ForegroundColor = fg;
+            Console.BackgroundColor = bgColor;
+            Console.ForegroundColor = fgColor;
+
             Console.SetCursorPosition(X, Y);
             Console.Write(Ch);
+
             Console.ResetColor();
         }
 
         // Стирание точки
         public void Undraw()
         {
+            Console.BackgroundColor = bgColor;
+            Console.ForegroundColor = fgColor;
+
             Console.SetCursorPosition(X, Y);
             Console.Write(' ');
+
+            Console.ResetColor();
         }
 
         // Смещение точки на offset пунктов в заданном направлении
@@ -82,12 +88,12 @@ namespace Tetris
         // Перегрузка операторов
         public static Point operator +(Point p1, Point p2)
         {
-            return new Point(p1.X + p2.X, p1.Y + p2.Y, p1.Ch);
+            return new Point(p1.X + p2.X, p1.Y + p2.Y, p1.Ch) { bgColor = p1.bgColor, fgColor = p1.fgColor };
         }
 
         public static Point operator -(Point p1, Point p2)
         {
-            return new Point(p1.X - p2.X, p1.Y - p2.Y, p1.Ch);
+            return new Point(p1.X - p2.X, p1.Y - p2.Y, p1.Ch) { bgColor = p1.bgColor, fgColor = p1.fgColor };
         }
 
         public override string ToString()
